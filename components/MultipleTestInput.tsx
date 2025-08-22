@@ -66,16 +66,8 @@ export function MultipleTestInput({ onTestValuesSet, onReset }: MultipleTestInpu
     onReset()
   }
 
-  const averageValue = readings.length > 0 
-    ? readings.reduce((sum, r) => sum + r.value, 0) / readings.length 
-    : 0
-
   const maxValue = readings.length > 0 
     ? Math.max(...readings.map(r => r.value))
-    : 0
-
-  const minValue = readings.length > 0 
-    ? Math.min(...readings.map(r => r.value))
     : 0
 
   return (
@@ -176,33 +168,12 @@ export function MultipleTestInput({ onTestValuesSet, onReset }: MultipleTestInpu
             </div>
           </div>
 
-          {/* Statistics */}
+          {/* Note about using maximum value */}
           {readings.length > 1 && (
             <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-              <h4 className="font-semibold text-blue-900 mb-2">Statistics:</h4>
-              <div className="grid grid-cols-3 gap-4 text-sm">
-                <div>
-                  <span className="text-blue-700">Average:</span>
-                  <span className="ml-2 font-medium text-blue-900">
-                    {averageValue.toFixed(2)} {readings[0].unit}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-blue-700">Maximum:</span>
-                  <span className="ml-2 font-medium text-blue-900">
-                    {maxValue.toFixed(2)} {readings[0].unit}
-                  </span>
-                </div>
-                <div>
-                  <span className="text-blue-700">Minimum:</span>
-                  <span className="ml-2 font-medium text-blue-900">
-                    {minValue.toFixed(2)} {readings[0].unit}
-                  </span>
-                </div>
-              </div>
-              <div className="mt-2 text-sm text-blue-700">
-                <strong>Note:</strong> Calculations will use the maximum value for safety assessment.
-              </div>
+              <p className="text-sm text-blue-700">
+                <strong>Note:</strong> The maximum value ({maxValue.toFixed(2)} {readings[0].unit}) will be used for safety calculations. Each sample will be evaluated individually for pass/fail determination.
+              </p>
             </div>
           )}
 

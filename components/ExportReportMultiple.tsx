@@ -89,17 +89,14 @@ export function ExportReportMultiple({
     doc.line(margin, yPosition, pageWidth - margin, yPosition)
     yPosition += 10
 
-    // Summary Statistics Section
+    // Test Summary Section
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(14)
-    doc.text('SUMMARY STATISTICS', margin, yPosition)
+    doc.text('TEST SUMMARY', margin, yPosition)
     yPosition += 10
 
     const passingCount = readings.filter(r => r.value <= endotoxinLimit).length
     const failingCount = readings.length - passingCount
-    const avgValue = readings.reduce((sum, r) => sum + r.value, 0) / readings.length
-    const maxValue = Math.max(...readings.map(r => r.value))
-    const minValue = Math.min(...readings.map(r => r.value))
     const passRate = (passingCount / readings.length) * 100
 
     doc.setFont('helvetica', 'normal')
@@ -109,12 +106,6 @@ export function ExportReportMultiple({
     doc.text(`Samples Passing: ${passingCount} (${passRate.toFixed(1)}%)`, margin + 5, yPosition)
     yPosition += 7
     doc.text(`Samples Failing: ${failingCount} (${(100 - passRate).toFixed(1)}%)`, margin + 5, yPosition)
-    yPosition += 7
-    doc.text(`Average Endotoxin Level: ${avgValue.toFixed(2)} ${readings[0].unit}`, margin + 5, yPosition)
-    yPosition += 7
-    doc.text(`Maximum Level: ${maxValue.toFixed(2)} ${readings[0].unit}`, margin + 5, yPosition)
-    yPosition += 7
-    doc.text(`Minimum Level: ${minValue.toFixed(2)} ${readings[0].unit}`, margin + 5, yPosition)
     yPosition += 12
 
     // Calculation Parameters Section
@@ -266,7 +257,7 @@ export function ExportReportMultiple({
     doc.setTextColor(0, 0, 0)
     doc.setFont('helvetica', 'bold')
     doc.setFontSize(12)
-    doc.text('COMPLIANCE STATEMENT', margin, yPosition)
+    doc.text('CALCULATION METHOD', margin, yPosition)
     yPosition += 8
     
     doc.setFont('helvetica', 'normal')
@@ -274,8 +265,6 @@ export function ExportReportMultiple({
     doc.text('This evaluation was performed in accordance with USP <85> Bacterial Endotoxins Test', margin + 5, yPosition)
     yPosition += 6
     doc.text('guidelines and the calculation method described in Malyala & Singh (2007).', margin + 5, yPosition)
-    yPosition += 6
-    doc.text('All test results have been documented for regulatory compliance.', margin + 5, yPosition)
 
     // Footer on last page
     doc.setTextColor(128, 128, 128)

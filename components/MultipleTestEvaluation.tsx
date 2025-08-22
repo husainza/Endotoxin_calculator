@@ -158,47 +158,6 @@ export function MultipleTestEvaluation({ readings, endotoxinLimit, unit }: Multi
         </div>
       </div>
 
-      {/* Statistical Summary */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <h4 className="font-semibold text-blue-900 mb-3">Statistical Analysis</h4>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-          <div>
-            <span className="text-blue-700">Average:</span>
-            <p className="font-medium text-blue-900">
-              {(readings.reduce((sum, r) => sum + r.value, 0) / readings.length).toFixed(2)} {unit}
-            </p>
-          </div>
-          <div>
-            <span className="text-blue-700">Maximum:</span>
-            <p className="font-medium text-blue-900">
-              {Math.max(...readings.map(r => r.value)).toFixed(2)} {unit}
-            </p>
-          </div>
-          <div>
-            <span className="text-blue-700">Minimum:</span>
-            <p className="font-medium text-blue-900">
-              {Math.min(...readings.map(r => r.value)).toFixed(2)} {unit}
-            </p>
-          </div>
-          <div>
-            <span className="text-blue-700">Std Dev:</span>
-            <p className="font-medium text-blue-900">
-              {calculateStdDev(readings.map(r => r.value)).toFixed(2)} {unit}
-            </p>
-          </div>
-        </div>
-        <div className="mt-3 text-xs text-blue-700">
-          <strong>Pass Rate:</strong> {((passingCount / readings.length) * 100).toFixed(1)}% 
-          ({passingCount}/{readings.length} samples)
-        </div>
-      </div>
     </div>
   )
-}
-
-function calculateStdDev(values: number[]): number {
-  const mean = values.reduce((sum, val) => sum + val, 0) / values.length
-  const squaredDiffs = values.map(val => Math.pow(val - mean, 2))
-  const variance = squaredDiffs.reduce((sum, val) => sum + val, 0) / values.length
-  return Math.sqrt(variance)
 }
