@@ -6,11 +6,9 @@ export interface AnimalModel {
 
 export const animalModels: AnimalModel[] = [
   { name: 'Mouse', weight: 0.03 },
-  { name: 'Gerbil', weight: 0.09 },
   { name: 'Rat', weight: 0.45 },
-  { name: 'Rabbit', weight: 4 },
   { name: 'Monkey (Cynomolgus)', weight: 3 },  // Cynomolgus monkeys typical weight
-  { name: 'Baboon', weight: 12 },
+  { name: 'Human', weight: 70 },  // Average adult human weight
   { name: 'Custom', weight: 0, isCustom: true },
 ]
 
@@ -69,21 +67,17 @@ export function calculateEndotoxinLimit(input: CalculationInput): CalculationRes
   }
 }
 
-// Reference tables from the paper (updated for 3kg Cynomolgus monkey)
+// Reference tables from the paper (updated for 3kg Cynomolgus monkey and 70kg Human)
 export const referenceTablesMg: Record<string, number[][]> = {
   'Mouse': [[0.001, 150], [0.010, 15], [0.025, 6]],
-  'Gerbil': [[0.001, 450], [0.010, 45], [0.025, 18]],
   'Rat': [[0.001, 2250], [0.010, 225], [0.025, 90]],
-  'Rabbit': [[0.010, 2000], [0.025, 800], [0.050, 400]],
   'Monkey (Cynomolgus)': [[0.100, 150], [0.250, 60], [0.500, 30]],  // Updated for 3kg weight
-  'Baboon': [[0.250, 240], [0.500, 120], [1.000, 60]],
+  'Human': [[1.000, 350], [2.500, 140], [5.000, 70]],  // For 70kg human
 }
 
 export const referenceTablesMl: Record<string, number[][]> = {
   'Mouse': [[0.050, 3.00], [0.100, 1.50], [0.200, 0.75]],
-  'Gerbil': [[0.050, 9.00], [0.100, 4.50], [0.200, 2.25]],
   'Rat': [[0.050, 45.00], [0.100, 22.50], [0.200, 11.25]],
-  'Rabbit': [[0.10, 200], [0.20, 100], [0.50, 40]],
   'Monkey (Cynomolgus)': [[0.10, 150], [0.20, 75], [0.50, 30]],  // Updated for 3kg weight
-  'Baboon': [[0.10, 600], [0.20, 300], [0.50, 120]],
+  'Human': [[1.00, 350], [2.00, 175], [5.00, 70]],  // For 70kg human
 }
