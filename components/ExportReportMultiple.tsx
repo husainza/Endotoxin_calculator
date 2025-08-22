@@ -98,6 +98,7 @@ export function ExportReportMultiple({
     const passingCount = readings.filter(r => r.value <= endotoxinLimit).length
     const failingCount = readings.length - passingCount
     const passRate = (passingCount / readings.length) * 100
+    const maxValue = Math.max(...readings.map(r => r.value))
 
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(11)
