@@ -8,7 +8,6 @@ export const animalModels: AnimalModel[] = [
   { name: 'Mouse', weight: 0.03 },
   { name: 'Rat', weight: 0.45 },
   { name: 'Monkey (Cynomolgus)', weight: 3 },  // Cynomolgus monkeys typical weight
-  { name: 'Human', weight: 70 },  // Average adult human weight
   { name: 'Custom', weight: 0, isCustom: true },
 ]
 
@@ -67,17 +66,15 @@ export function calculateEndotoxinLimit(input: CalculationInput): CalculationRes
   }
 }
 
-// Reference tables from the paper (updated for 3kg Cynomolgus monkey and 70kg Human)
+// Reference tables from the paper (updated for 3kg Cynomolgus monkey)
 export const referenceTablesMg: Record<string, number[][]> = {
   'Mouse': [[0.001, 150], [0.010, 15], [0.025, 6]],
   'Rat': [[0.001, 2250], [0.010, 225], [0.025, 90]],
   'Monkey (Cynomolgus)': [[0.100, 150], [0.250, 60], [0.500, 30]],  // Updated for 3kg weight
-  'Human': [[1.000, 350], [2.500, 140], [5.000, 70]],  // For 70kg human
 }
 
 export const referenceTablesMl: Record<string, number[][]> = {
   'Mouse': [[0.050, 3.00], [0.100, 1.50], [0.200, 0.75]],
   'Rat': [[0.050, 45.00], [0.100, 22.50], [0.200, 11.25]],
   'Monkey (Cynomolgus)': [[0.10, 150], [0.20, 75], [0.50, 30]],  // Updated for 3kg weight
-  'Human': [[1.00, 350], [2.00, 175], [5.00, 70]],  // For 70kg human
 }
