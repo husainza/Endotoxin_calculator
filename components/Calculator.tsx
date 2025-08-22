@@ -6,6 +6,7 @@ import { DoseInput } from './DoseInput'
 import { ResultsDisplay } from './ResultsDisplay'
 import { ReferenceTables } from './ReferenceTables'
 import { TestEvaluation } from './TestEvaluation'
+import { TestInput } from './TestInput'
 import {
   animalModels,
   calculateEndotoxinLimit,
@@ -24,6 +25,8 @@ export function Calculator() {
   const [route, setRoute] = useState<RouteOfAdministration>('standard')
   const [result, setResult] = useState<CalculationResult | null>(null)
   const [showReferenceTables, setShowReferenceTables] = useState(false)
+  const [testValue, setTestValue] = useState<number | null>(null)
+  const [testUnit, setTestUnit] = useState<string>('EU/mg')
 
   const handleCalculate = () => {
     const doseValue = parseFloat(dose)
@@ -53,12 +56,26 @@ export function Calculator() {
     setResult(null)
   }
 
+  const handleTestValueSet = (value: number | null, unit: string) => {
+    setTestValue(value)
+    setTestUnit(unit)
+    // Reset calculation when test value changes
+    if (value === null) {
+      setResult(null)
+    }
+  }
+
   return (
     <div className="space-y-6">
+      {/* Test Input Section - Always visible at top */}
+      <TestInput onTestValueSet={handleTestValueSet} />
+      
+      {/* Calculation Section */}
       <div className="bg-white rounded-xl shadow-lg p-8">
-        <div className="mb-8">
+        <div className="mb-6">
+          <h3 className="text-xl font-bold text-gray-900 mb-2">Calculate Endotoxin Limit</h3>
           <p className="text-gray-600">
-            Calculate endotoxin limits for preclinical research formulations using USP guidelines
+            Enter dose and animal information to determine the acceptable limit
           </p>
         </div>
 
@@ -109,10 +126,21 @@ export function Calculator() {
                 doseUnit={doseUnit}
                 frequency={frequency}
               />
-              <TestEvaluation 
-                endotoxinLimit={result.endotoxinLimit}
-                unit={result.unit}
-              />
+              {testValue !== null && testUnit === result.unit && (
+                <TestEvaluation 
+                  endotoxinLimit={result.endotoxinLimit}
+                  unit={result.unit}
+                  presetTestValue={testValue}
+                />
+              )}
+              {testValue !== null && testUnit !== result.unit && (
+                <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                  <p className="text-sm text-yellow-800">
+                    <strong>Unit Mismatch:</strong> Your test was measured in {testUnit} but the limit is calculated in {result.unit}. 
+                    Please ensure units match for accurate evaluation.
+                  </p>
+                </div>
+              )}
             </>
           )}
         </div>

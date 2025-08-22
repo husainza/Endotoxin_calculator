@@ -1,19 +1,35 @@
 'use client'
 
-import { useState } from 'react'
+import React, { useState } from 'react'
 
 interface TestEvaluationProps {
   endotoxinLimit: number
   unit: string
+  presetTestValue?: number
 }
 
-export function TestEvaluation({ endotoxinLimit, unit }: TestEvaluationProps) {
-  const [testReading, setTestReading] = useState<string>('')
+export function TestEvaluation({ endotoxinLimit, unit, presetTestValue }: TestEvaluationProps) {
+  const [testReading, setTestReading] = useState<string>(presetTestValue?.toString() || '')
   const [evaluation, setEvaluation] = useState<{
     pass: boolean
     percentage: number
     margin: number
   } | null>(null)
+
+  // Auto-evaluate if preset value is provided
+  React.useEffect(() => {
+    if (presetTestValue !== undefined && presetTestValue !== null) {
+      const pass = presetTestValue <= endotoxinLimit
+      const percentage = (presetTestValue / endotoxinLimit) * 100
+      const margin = endotoxinLimit - presetTestValue
+
+      setEvaluation({
+        pass,
+        percentage,
+        margin
+      })
+    }
+  }, [presetTestValue, endotoxinLimit])
 
   const handleEvaluate = () => {
     const reading = parseFloat(testReading)
@@ -56,39 +72,43 @@ export function TestEvaluation({ endotoxinLimit, unit }: TestEvaluationProps) {
   return (
     <div className="mt-6 p-6 bg-white rounded-xl shadow-lg border border-gray-200">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        🧪 Test Result Evaluation
+        📊 Evaluation Results
       </h3>
 
       <div className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Enter Your Test Reading
-          </label>
-          <div className="flex gap-2">
-            <input
-              type="number"
-              value={testReading}
-              onChange={(e) => setTestReading(e.target.value)}
-              placeholder={`Enter endotoxin level`}
-              step="any"
-              className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
-            />
-            <div className="px-4 py-2 bg-gray-100 rounded-lg font-medium text-gray-700">
-              {unit}
+        {!presetTestValue && (
+          <>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Enter Your Test Reading
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="number"
+                  value={testReading}
+                  onChange={(e) => setTestReading(e.target.value)}
+                  placeholder={`Enter endotoxin level`}
+                  step="any"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                />
+                <div className="px-4 py-2 bg-gray-100 rounded-lg font-medium text-gray-700">
+                  {unit}
+                </div>
+              </div>
+              <p className="mt-1 text-xs text-gray-500">
+                Enter the endotoxin level detected in your sample
+              </p>
             </div>
-          </div>
-          <p className="mt-1 text-xs text-gray-500">
-            Enter the endotoxin level detected in your sample
-          </p>
-        </div>
 
-        <button
-          onClick={handleEvaluate}
-          disabled={!testReading}
-          className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Evaluate Test Result
-        </button>
+            <button
+              onClick={handleEvaluate}
+              disabled={!testReading}
+              className="w-full px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-semibold rounded-lg hover:from-purple-700 hover:to-purple-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Evaluate Test Result
+            </button>
+          </>
+        )}
 
         {evaluation && (
           <div className={`mt-4 p-4 rounded-lg border-2 ${
