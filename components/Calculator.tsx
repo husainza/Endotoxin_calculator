@@ -122,7 +122,7 @@ export function Calculator() {
                     unit={result.unit}
                     presetTestValue={testValue}
                   />
-                  {sampleName && (
+                  {sampleName ? (
                     <ExportReport
                       sampleName={sampleName}
                       testValue={testValue}
@@ -135,6 +135,12 @@ export function Calculator() {
                       route={route}
                       result={result}
                     />
+                  ) : (
+                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                      <p className="text-sm text-gray-600 text-center">
+                        To generate a PDF report, please provide a Sample Name/ID above
+                      </p>
+                    </div>
                   )}
                 </>
               )}

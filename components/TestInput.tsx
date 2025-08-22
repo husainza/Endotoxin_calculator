@@ -13,10 +13,6 @@ export function TestInput({ onTestValueSet }: TestInputProps) {
   const [isSet, setIsSet] = useState(false)
 
   const handleSetTestValue = () => {
-    if (!sampleName.trim()) {
-      alert('Please enter a sample name')
-      return
-    }
     const reading = parseFloat(testReading)
     if (isNaN(reading) || reading < 0) {
       alert('Please enter a valid test reading')
@@ -43,7 +39,7 @@ export function TestInput({ onTestValueSet }: TestInputProps) {
       <div className="space-y-4">
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-2">
-            Sample Name/ID <span className="text-red-500">*</span>
+            Sample Name/ID <span className="text-gray-400 text-xs">(Optional - Required for PDF report)</span>
           </label>
           <input
             type="text"
@@ -88,7 +84,7 @@ export function TestInput({ onTestValueSet }: TestInputProps) {
           {!isSet ? (
             <button
               onClick={handleSetTestValue}
-              disabled={!testReading || !sampleName}
+              disabled={!testReading}
               className="px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white font-semibold rounded-lg hover:from-blue-700 hover:to-blue-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
             >
               Set Test Value
@@ -97,10 +93,12 @@ export function TestInput({ onTestValueSet }: TestInputProps) {
             <>
               <div className="flex-1 px-4 py-3 bg-green-50 border border-green-300 rounded-lg">
                 <div className="space-y-1">
-                  <div className="flex items-center justify-between">
-                    <span className="text-green-800 font-medium">Sample:</span>
-                    <span className="text-green-900 font-bold">{sampleName}</span>
-                  </div>
+                  {sampleName && (
+                    <div className="flex items-center justify-between">
+                      <span className="text-green-800 font-medium">Sample:</span>
+                      <span className="text-green-900 font-bold">{sampleName}</span>
+                    </div>
+                  )}
                   <div className="flex items-center justify-between">
                     <span className="text-green-800 font-medium">Test Result:</span>
                     <span className="text-green-900 font-bold">{parseFloat(testReading).toFixed(2)} {testUnit}</span>
