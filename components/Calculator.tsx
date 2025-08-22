@@ -11,6 +11,7 @@ import { MultipleTestInput } from './MultipleTestInput'
 import { MaximumSafeDose } from './MaximumSafeDose'
 import { ExportReport } from './ExportReport'
 import { ExportReportMultiple } from './ExportReportMultiple'
+import { PrintableView } from './PrintableView'
 import {
   animalModels,
   calculateEndotoxinLimit,
@@ -118,8 +119,22 @@ export function Calculator() {
 
   return (
     <div className="space-y-6">
+      {/* Printable View - Hidden on screen, visible on print */}
+      <PrintableView
+        result={result}
+        animal={selectedAnimal}
+        dose={dose}
+        doseUnit={doseUnit}
+        frequency={frequency}
+        route={route}
+        testValue={testValue}
+        testUnit={testUnit}
+        sampleName={sampleName}
+        multipleReadings={multipleReadings}
+      />
+      
       {/* Toggle for single vs multiple readings */}
-      <div className="flex justify-between items-center mb-4">
+      <div className="flex justify-between items-center mb-4 no-print">
         <div className="flex items-center gap-4">
           <button
             onClick={() => setUseMultipleReadings(false)}
@@ -189,7 +204,7 @@ export function Calculator() {
             onRouteChange={setRoute}
           />
 
-          <div className="flex gap-4">
+          <div className="flex gap-4 no-print">
             <button
               onClick={handleCalculate}
               className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white font-semibold rounded-lg hover:from-indigo-700 hover:to-indigo-800 transition-all transform hover:scale-105 shadow-lg"
