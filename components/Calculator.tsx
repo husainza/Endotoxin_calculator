@@ -5,10 +5,12 @@ import { AnimalSelector } from './AnimalSelector'
 import { DoseInput } from './DoseInput'
 import { ResultsDisplay } from './ResultsDisplay'
 import { TestEvaluation } from './TestEvaluation'
+import { MultipleTestEvaluation } from './MultipleTestEvaluation'
 import { TestInput } from './TestInput'
 import { MultipleTestInput } from './MultipleTestInput'
 import { MaximumSafeDose } from './MaximumSafeDose'
 import { ExportReport } from './ExportReport'
+import { ExportReportMultiple } from './ExportReportMultiple'
 import {
   animalModels,
   calculateEndotoxinLimit,
@@ -18,6 +20,13 @@ import {
   type RouteOfAdministration,
   type CalculationResult
 } from '@/lib/calculations'
+
+interface TestReading {
+  id: string
+  sampleName: string
+  value: number
+  unit: 'EU/mg' | 'EU/mL'
+}
 
 export function Calculator() {
   const [selectedAnimal, setSelectedAnimal] = useState<AnimalModel>(animalModels[2]) // Monkey as default
@@ -30,7 +39,7 @@ export function Calculator() {
   const [testUnit, setTestUnit] = useState<string>('EU/mg')
   const [sampleName, setSampleName] = useState<string>('')
   const [useMultipleReadings, setUseMultipleReadings] = useState(false)
-  const [multipleReadings, setMultipleReadings] = useState<any[]>([])
+  const [multipleReadings, setMultipleReadings] = useState<TestReading[]>([])
 
   const handleCalculate = () => {
     const doseValue = parseFloat(dose)
@@ -85,14 +94,14 @@ export function Calculator() {
     }
   }
 
-  const handleMultipleReadingsSet = (readings: any[]) => {
+  const handleMultipleReadingsSet = (readings: TestReading[]) => {
     setMultipleReadings(readings)
     if (readings.length > 0) {
       // Use the maximum value for safety
-      const maxReading = Math.max(...readings.map((r: any) => r.value))
+      const maxReading = Math.max(...readings.map(r => r.value))
       const unit = readings[0].unit
       // Find the sample with max value
-      const maxSample = readings.find((r: any) => r.value === maxReading)
+      const maxSample = readings.find(r => r.value === maxReading)
       setTestValue(maxReading)
       setTestUnit(unit)
       setSampleName(maxSample?.sampleName || 'Multiple Samples')
@@ -197,54 +206,84 @@ export function Calculator() {
 
           {result && (
             <>
-              {/* Show info about multiple readings if applicable */}
-              {multipleReadings.length > 1 && testValue !== null && (
-                <div className="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-blue-800">
-                    <strong>Multiple Readings Analysis:</strong> Using maximum value of {testValue.toFixed(2)} {testUnit} from {multipleReadings.length} samples for safety evaluation.
-                  </p>
-                </div>
-              )}
-              
-              {/* Test Evaluation First */}
+              {/* Test Evaluation - Different for single vs multiple */}
               {testValue !== null && testUnit === result.unit && (
                 <>
-                  <TestEvaluation 
-                    endotoxinLimit={result.endotoxinLimit}
-                    unit={result.unit}
-                    presetTestValue={testValue}
-                  />
-                  
-                  {/* Show maximum safe dose calculation if limit is exceeded */}
-                  {testValue > result.endotoxinLimit && (
-                    <MaximumSafeDose
-                      testValue={testValue}
-                      testUnit={testUnit}
-                      animal={selectedAnimal}
-                      doseUnit={doseUnit}
-                      frequency={frequency}
-                      route={route}
-                    />
-                  )}
-                  {sampleName ? (
-                    <ExportReport
-                      sampleName={sampleName}
-                      testValue={testValue}
-                      testUnit={testUnit}
-                      endotoxinLimit={result.endotoxinLimit}
-                      animal={selectedAnimal}
-                      dose={parseFloat(dose)}
-                      doseUnit={doseUnit}
-                      frequency={frequency}
-                      route={route}
-                      result={result}
-                    />
+                  {multipleReadings.length > 1 ? (
+                    // Multiple readings evaluation
+                    <>
+                      <MultipleTestEvaluation
+                        readings={multipleReadings}
+                        endotoxinLimit={result.endotoxinLimit}
+                        unit={result.unit}
+                      />
+                      
+                      {/* Show maximum safe dose calculation if ANY sample exceeds limit */}
+                      {multipleReadings.some(r => r.value > result.endotoxinLimit) && (
+                        <MaximumSafeDose
+                          testValue={Math.max(...multipleReadings.map(r => r.value))}
+                          testUnit={testUnit}
+                          animal={selectedAnimal}
+                          doseUnit={doseUnit}
+                          frequency={frequency}
+                          route={route}
+                        />
+                      )}
+                      
+                      {/* Export report for multiple samples */}
+                      <ExportReportMultiple
+                        readings={multipleReadings}
+                        endotoxinLimit={result.endotoxinLimit}
+                        animal={selectedAnimal}
+                        dose={parseFloat(dose)}
+                        doseUnit={doseUnit}
+                        frequency={frequency}
+                        route={route}
+                        result={result}
+                      />
+                    </>
                   ) : (
-                    <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
-                      <p className="text-sm text-gray-600 text-center">
-                        To generate a PDF report, please provide a Sample Name/ID above
-                      </p>
-                    </div>
+                    // Single reading evaluation
+                    <>
+                      <TestEvaluation 
+                        endotoxinLimit={result.endotoxinLimit}
+                        unit={result.unit}
+                        presetTestValue={testValue}
+                      />
+                      
+                      {/* Show maximum safe dose calculation if limit is exceeded */}
+                      {testValue > result.endotoxinLimit && (
+                        <MaximumSafeDose
+                          testValue={testValue}
+                          testUnit={testUnit}
+                          animal={selectedAnimal}
+                          doseUnit={doseUnit}
+                          frequency={frequency}
+                          route={route}
+                        />
+                      )}
+                      
+                      {sampleName ? (
+                        <ExportReport
+                          sampleName={sampleName}
+                          testValue={testValue}
+                          testUnit={testUnit}
+                          endotoxinLimit={result.endotoxinLimit}
+                          animal={selectedAnimal}
+                          dose={parseFloat(dose)}
+                          doseUnit={doseUnit}
+                          frequency={frequency}
+                          route={route}
+                          result={result}
+                        />
+                      ) : (
+                        <div className="p-4 bg-gray-50 border border-gray-200 rounded-lg">
+                          <p className="text-sm text-gray-600 text-center">
+                            To generate a PDF report, please provide a Sample Name/ID above
+                          </p>
+                        </div>
+                      )}
+                    </>
                   )}
                 </>
               )}
