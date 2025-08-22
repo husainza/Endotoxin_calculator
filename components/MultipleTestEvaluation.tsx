@@ -11,33 +11,14 @@ interface MultipleTestEvaluationProps {
   readings: TestReading[]
   endotoxinLimit: number
   unit: string
-  animal: any
-  doseUnit: string
-  frequency: 'hourly' | 'daily'
-  route: 'standard' | 'intrathecal'
 }
 
-export function MultipleTestEvaluation({ readings, endotoxinLimit, unit, animal, doseUnit, frequency, route }: MultipleTestEvaluationProps) {
+export function MultipleTestEvaluation({ readings, endotoxinLimit, unit }: MultipleTestEvaluationProps) {
   const allPass = readings.every(r => r.value <= endotoxinLimit)
   const somePass = readings.some(r => r.value <= endotoxinLimit)
   const passingCount = readings.filter(r => r.value <= endotoxinLimit).length
   const failingCount = readings.length - passingCount
   
-  // Calculate max safe dose for each sample
-  const calculateMaxSafeDose = (testValue: number) => {
-    const K = route === 'intrathecal' ? 0.2 : 5 // EU/kg
-    const maxM = K / testValue // Maximum M that would keep us at the limit
-    
-    let maxSafeDose: number
-    if (doseUnit === 'mg/kg' || doseUnit === 'mL/kg') {
-      maxSafeDose = frequency === 'daily' ? maxM * 24 : maxM
-    } else {
-      const maxHourlyDose = maxM * animal.weight
-      maxSafeDose = frequency === 'daily' ? maxHourlyDose * 24 : maxHourlyDose
-    }
-    
-    return maxSafeDose
-  }
 
   return (
     <div className="mt-6 space-y-4">
@@ -53,7 +34,7 @@ export function MultipleTestEvaluation({ readings, endotoxinLimit, unit, animal,
               <svg className="w-6 h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span className="text-green-800">All Samples Pass</span>
+              <span className="text-green-800">All Samples Below USP Limit</span>
             </>
           ) : somePass ? (
             <>
@@ -67,17 +48,17 @@ export function MultipleTestEvaluation({ readings, endotoxinLimit, unit, animal,
               <svg className="w-6 h-6 mr-2 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <span className="text-red-800">All Samples Fail</span>
+              <span className="text-red-800">All Samples Above USP Limit</span>
             </>
           )}
         </h3>
         <div className="text-sm">
           <p className={allPass ? 'text-green-700' : somePass ? 'text-yellow-700' : 'text-red-700'}>
-            <strong>Summary:</strong> {passingCount} of {readings.length} samples pass the endotoxin limit of {endotoxinLimit.toFixed(2)} {unit}
+            <strong>Summary:</strong> {passingCount} of {readings.length} samples are below the USP limit of {endotoxinLimit.toFixed(2)} {unit}
           </p>
           {failingCount > 0 && (
             <p className="text-red-700 mt-1">
-              <strong>Action Required:</strong> {failingCount} sample{failingCount > 1 ? 's require' : ' requires'} further purification
+              <strong>Note:</strong> {failingCount} sample{failingCount > 1 ? 's exceed' : ' exceeds'} the USP limit
             </p>
           )}
         </div>
@@ -105,11 +86,11 @@ export function MultipleTestEvaluation({ readings, endotoxinLimit, unit, animal,
                       <span className={`px-2 py-1 rounded text-xs font-medium ${
                         pass ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                       }`}>
-                        {pass ? 'PASS' : 'FAIL'}
+                        {pass ? 'Below' : 'Above'}
                       </span>
                     </div>
                     
-                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                       <div>
                         <span className="text-gray-500">Test Value:</span>
                         <p className="font-medium">{reading.value.toFixed(2)} {reading.unit}</p>
@@ -132,15 +113,6 @@ export function MultipleTestEvaluation({ readings, endotoxinLimit, unit, animal,
                         <span className="text-gray-500">Margin:</span>
                         <p className={`font-medium ${pass ? 'text-green-600' : 'text-red-600'}`}>
                           {pass ? '+' : ''}{margin.toFixed(2)} {unit}
-                        </p>
-                      </div>
-                      <div>
-                        <span className="text-gray-500">Max Safe Dose:</span>
-                        <p className={`font-medium ${!pass ? 'text-orange-600' : 'text-gray-600'}`}>
-                          {calculateMaxSafeDose(reading.value).toFixed(3)} {doseUnit}
-                          <span className="text-xs text-gray-500 block">
-                            {frequency === 'daily' ? '/day' : '/hr'}
-                          </span>
                         </p>
                       </div>
                     </div>
@@ -171,12 +143,12 @@ export function MultipleTestEvaluation({ readings, endotoxinLimit, unit, animal,
                     {/* Recommendations */}
                     {!pass && (
                       <div className="mt-2 p-2 bg-red-50 rounded text-xs text-red-700">
-                        Exceeds limit by {Math.abs(margin).toFixed(2)} {unit} ({(percentage - 100).toFixed(1)}%)
+                        Exceeds USP limit by {Math.abs(margin).toFixed(2)} {unit} ({(percentage - 100).toFixed(1)}%)
                       </div>
                     )}
                     {pass && percentage > 80 && (
                       <div className="mt-2 p-2 bg-yellow-50 rounded text-xs text-yellow-700">
-                        Caution: Approaching limit ({percentage.toFixed(1)}% of maximum)
+                        Caution: Approaching USP limit ({percentage.toFixed(1)}% of maximum)
                       </div>
                     )}
                   </div>

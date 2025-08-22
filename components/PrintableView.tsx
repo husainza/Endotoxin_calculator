@@ -123,7 +123,7 @@ export function PrintableView({
                       <td>{reading.value.toFixed(2)} {reading.unit}</td>
                       <td>{percentage.toFixed(1)}%</td>
                       <td className={pass ? 'text-green-600' : 'text-red-600'}>
-                        {pass ? 'PASS' : 'FAIL'}
+                        {pass ? 'Below' : 'Above'}
                       </td>
                     </tr>
                   )
@@ -148,7 +148,7 @@ export function PrintableView({
                 <tr>
                   <td className="font-medium">Result:</td>
                   <td className={testValue <= result.endotoxinLimit ? 'text-green-600 font-bold' : 'text-red-600 font-bold'}>
-                    {testValue <= result.endotoxinLimit ? 'PASS' : 'FAIL'}
+                    {testValue <= result.endotoxinLimit ? 'Below USP Limit' : 'Above USP Limit'}
                   </td>
                 </tr>
               </tbody>

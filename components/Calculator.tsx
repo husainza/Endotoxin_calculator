@@ -8,7 +8,6 @@ import { TestEvaluation } from './TestEvaluation'
 import { MultipleTestEvaluation } from './MultipleTestEvaluation'
 import { TestInput } from './TestInput'
 import { MultipleTestInput } from './MultipleTestInput'
-import { MaximumSafeDose } from './MaximumSafeDose'
 import { ExportReport } from './ExportReport'
 import { ExportReportMultiple } from './ExportReportMultiple'
 import { PrintableView } from './PrintableView'
@@ -231,10 +230,6 @@ export function Calculator() {
                         readings={multipleReadings}
                         endotoxinLimit={result.endotoxinLimit}
                         unit={result.unit}
-                        animal={selectedAnimal}
-                        doseUnit={doseUnit}
-                        frequency={frequency}
-                        route={route}
                       />
                       
                       {/* Export report for multiple samples */}
@@ -257,18 +252,6 @@ export function Calculator() {
                         unit={result.unit}
                         presetTestValue={testValue}
                       />
-                      
-                      {/* Show maximum safe dose calculation if limit is exceeded */}
-                      {testValue > result.endotoxinLimit && (
-                        <MaximumSafeDose
-                          testValue={testValue}
-                          testUnit={testUnit}
-                          animal={selectedAnimal}
-                          doseUnit={doseUnit}
-                          frequency={frequency}
-                          route={route}
-                        />
-                      )}
                       
                       {sampleName ? (
                         <ExportReport

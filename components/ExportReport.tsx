@@ -123,7 +123,7 @@ export function ExportReport({
     doc.text('EVALUATION RESULT', margin + 5, yPosition + 5)
     
     doc.setFontSize(20)
-    doc.text(pass ? 'PASS' : 'FAIL', margin + 5, yPosition + 15)
+    doc.text(pass ? 'BELOW USP LIMIT' : 'ABOVE USP LIMIT', margin + 5, yPosition + 15)
     
     doc.setFont('helvetica', 'normal')
     doc.setFontSize(11)
@@ -144,7 +144,7 @@ export function ExportReport({
     if (pass) {
       doc.text(`The sample "${sampleName}" has an endotoxin level of ${testValue.toFixed(2)} ${testUnit},`, margin + 5, yPosition)
       yPosition += 7
-      doc.text(`which is BELOW the calculated limit of ${endotoxinLimit.toFixed(2)} ${result.unit}.`, margin + 5, yPosition)
+      doc.text(`which is BELOW the USP limit of ${endotoxinLimit.toFixed(2)} ${result.unit}.`, margin + 5, yPosition)
       yPosition += 7
       doc.text(`Safety Margin: ${Math.abs(margin_value).toFixed(2)} ${result.unit} (${(100 - percentage).toFixed(1)}% below limit)`, margin + 5, yPosition)
       yPosition += 10
@@ -165,11 +165,11 @@ export function ExportReport({
       doc.setTextColor(255, 0, 0)
       doc.text(`The sample "${sampleName}" has an endotoxin level of ${testValue.toFixed(2)} ${testUnit},`, margin + 5, yPosition)
       yPosition += 7
-      doc.text(`which EXCEEDS the calculated limit of ${endotoxinLimit.toFixed(2)} ${result.unit}.`, margin + 5, yPosition)
+      doc.text(`which EXCEEDS the USP limit of ${endotoxinLimit.toFixed(2)} ${result.unit}.`, margin + 5, yPosition)
       yPosition += 7
       doc.text(`Exceeded By: ${Math.abs(margin_value).toFixed(2)} ${result.unit} (${(percentage - 100).toFixed(1)}% over limit)`, margin + 5, yPosition)
       yPosition += 10
-      doc.text('ACTION REQUIRED: Sample requires further purification to reduce endotoxin levels.', margin + 5, yPosition)
+      doc.text('NOTE: Sample exceeds the USP endotoxin limit.', margin + 5, yPosition)
     }
     
     // Footer

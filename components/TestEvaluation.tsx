@@ -62,11 +62,11 @@ export function TestEvaluation({ endotoxinLimit, unit, presetTestValue }: TestEv
   const getStatusMessage = () => {
     if (!evaluation) return ''
     if (evaluation.pass) {
-      if (evaluation.percentage <= 50) return 'Excellent - Well below limit'
-      if (evaluation.percentage <= 80) return 'Good - Within safe range'
-      return 'Caution - Approaching limit'
+      if (evaluation.percentage <= 50) return 'Well below USP limit'
+      if (evaluation.percentage <= 80) return 'Within acceptable range'
+      return 'Approaching USP limit'
     }
-    return 'Failed - Exceeds limit'
+    return 'Exceeds USP limit'
   }
 
   return (
@@ -130,7 +130,7 @@ export function TestEvaluation({ endotoxinLimit, unit, presetTestValue }: TestEv
                       : 'text-orange-700'
                   : 'text-red-700'
               }`}>
-                {evaluation.pass ? 'PASS' : 'FAIL'}
+                {evaluation.pass ? 'Below USP Limit' : 'Above USP Limit'}
               </span>
               <span className={`text-lg font-semibold ${
                 evaluation.pass 
@@ -180,12 +180,12 @@ export function TestEvaluation({ endotoxinLimit, unit, presetTestValue }: TestEv
               </p>
               {evaluation.pass && evaluation.percentage > 80 && (
                 <p className="text-xs text-orange-600 mt-1">
-                  Warning: Consider retesting or additional purification
+                  Sample is approaching the USP limit
                 </p>
               )}
               {!evaluation.pass && (
                 <p className="text-xs text-red-600 mt-1">
-                  Action Required: Sample requires further purification to reduce endotoxin levels
+                  Sample exceeds USP endotoxin limit
                 </p>
               )}
             </div>
