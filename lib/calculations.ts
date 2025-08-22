@@ -9,7 +9,7 @@ export const animalModels: AnimalModel[] = [
   { name: 'Gerbil', weight: 0.09 },
   { name: 'Rat', weight: 0.45 },
   { name: 'Rabbit', weight: 4 },
-  { name: 'Monkey', weight: 3 },
+  { name: 'Monkey', weight: 8 },  // Corrected back to 8 kg as per the table
   { name: 'Baboon', weight: 12 },
   { name: 'Custom', weight: 0, isCustom: true },
 ]
@@ -39,18 +39,20 @@ export function calculateEndotoxinLimit(input: CalculationInput): CalculationRes
   // K value based on route of administration
   const K = route === 'intrathecal' ? 0.2 : 5 // EU/kg
   
-  // Convert dose based on unit type
-  let actualDose = dose
-  if (doseUnit === 'mg/kg' || doseUnit === 'mL/kg') {
-    // For per kg doses, multiply by animal weight to get total dose
-    actualDose = dose * animalModel.weight
-  }
-  
-  // Convert dose to hourly if daily
-  const hourlyDose = frequency === 'daily' ? actualDose / 24 : actualDose
-  
   // Calculate M (dose per kg body weight per hour)
-  const M = hourlyDose / animalModel.weight
+  let M: number
+  
+  if (doseUnit === 'mg/kg' || doseUnit === 'mL/kg') {
+    // For per kg doses, the dose is already per kg
+    // Just need to convert to hourly if daily
+    M = frequency === 'daily' ? dose / 24 : dose
+  } else {
+    // For absolute doses (mg or mL), need to divide by body weight
+    // First convert to hourly if daily
+    const hourlyDose = frequency === 'daily' ? dose / 24 : dose
+    // Then divide by body weight to get per kg
+    M = hourlyDose / animalModel.weight
+  }
   
   // Calculate endotoxin limit
   const endotoxinLimit = K / M
