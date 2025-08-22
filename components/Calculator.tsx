@@ -216,19 +216,11 @@ export function Calculator() {
                         readings={multipleReadings}
                         endotoxinLimit={result.endotoxinLimit}
                         unit={result.unit}
+                        animal={selectedAnimal}
+                        doseUnit={doseUnit}
+                        frequency={frequency}
+                        route={route}
                       />
-                      
-                      {/* Show maximum safe dose calculation if ANY sample exceeds limit */}
-                      {multipleReadings.some(r => r.value > result.endotoxinLimit) && (
-                        <MaximumSafeDose
-                          testValue={Math.max(...multipleReadings.map(r => r.value))}
-                          testUnit={testUnit}
-                          animal={selectedAnimal}
-                          doseUnit={doseUnit}
-                          frequency={frequency}
-                          route={route}
-                        />
-                      )}
                       
                       {/* Export report for multiple samples */}
                       <ExportReportMultiple

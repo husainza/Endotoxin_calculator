@@ -34,19 +34,12 @@ export function Dashboard() {
         {/* Top Header Bar */}
         <div className="bg-white shadow-sm border-b border-gray-200">
           <div className="px-6 py-4">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-bold text-gray-800">
-                {activeSection === 'calculator' && 'Endotoxin Limit Calculator'}
-                {activeSection === 'reference' && 'Reference Tables'}
-                {activeSection === 'about' && 'About This Tool'}
-                {activeSection === 'methodology' && 'Calculation Methodology'}
-              </h2>
-              <div className="flex items-center space-x-2">
-                <span className="px-3 py-1 bg-indigo-100 text-indigo-700 rounded-full text-sm font-medium">
-                  USP Compliant
-                </span>
-              </div>
-            </div>
+            <h2 className="text-2xl font-bold text-gray-800">
+              {activeSection === 'calculator' && 'Endotoxin Limit Calculator'}
+              {activeSection === 'reference' && 'Reference Tables'}
+              {activeSection === 'about' && 'About This Tool'}
+              {activeSection === 'methodology' && 'Calculation Methodology'}
+            </h2>
           </div>
         </div>
         

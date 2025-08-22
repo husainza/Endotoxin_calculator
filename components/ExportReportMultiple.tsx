@@ -140,25 +140,42 @@ export function ExportReportMultiple({
     doc.text('INDIVIDUAL SAMPLE RESULTS', margin, yPosition)
     yPosition += 10
 
+    // Calculate max safe dose for each sample
+    const calculateMaxSafeDose = (testValue: number) => {
+      const K = route === 'intrathecal' ? 0.2 : 5
+      const maxM = K / testValue
+      
+      let maxSafeDose: number
+      if (doseUnit === 'mg/kg' || doseUnit === 'mL/kg') {
+        maxSafeDose = frequency === 'daily' ? maxM * 24 : maxM
+      } else {
+        const maxHourlyDose = maxM * animal.weight
+        maxSafeDose = frequency === 'daily' ? maxHourlyDose * 24 : maxHourlyDose
+      }
+      return maxSafeDose
+    }
+
     // Table header
     doc.setFillColor(240, 240, 240)
     doc.rect(margin, yPosition - 5, pageWidth - 2 * margin, 8, 'F')
     doc.setFont('helvetica', 'bold')
-    doc.setFontSize(10)
+    doc.setFontSize(9)
     doc.text('Sample ID', margin + 2, yPosition)
-    doc.text('Test Value', margin + 60, yPosition)
-    doc.text('Limit', margin + 100, yPosition)
-    doc.text('% of Limit', margin + 130, yPosition)
-    doc.text('Result', margin + 160, yPosition)
+    doc.text('Test Value', margin + 40, yPosition)
+    doc.text('Limit', margin + 70, yPosition)
+    doc.text('% of Limit', margin + 95, yPosition)
+    doc.text('Max Safe Dose', margin + 125, yPosition)
+    doc.text('Result', margin + 165, yPosition)
     yPosition += 10
 
     // Table rows
     doc.setFont('helvetica', 'normal')
-    doc.setFontSize(10)
+    doc.setFontSize(9)
     readings.forEach((reading, index) => {
       checkNewPage(15)
       const pass = reading.value <= endotoxinLimit
       const percentage = (reading.value / endotoxinLimit) * 100
+      const maxSafeDose = calculateMaxSafeDose(reading.value)
       
       // Alternate row background
       if (index % 2 === 0) {
@@ -168,17 +185,18 @@ export function ExportReportMultiple({
       
       doc.setTextColor(0, 0, 0)
       doc.text(reading.sampleName, margin + 2, yPosition)
-      doc.text(`${reading.value.toFixed(2)} ${reading.unit}`, margin + 60, yPosition)
-      doc.text(`${endotoxinLimit.toFixed(2)} ${result.unit}`, margin + 100, yPosition)
-      doc.text(`${percentage.toFixed(1)}%`, margin + 130, yPosition)
+      doc.text(`${reading.value.toFixed(2)} ${reading.unit}`, margin + 40, yPosition)
+      doc.text(`${endotoxinLimit.toFixed(2)} ${result.unit}`, margin + 70, yPosition)
+      doc.text(`${percentage.toFixed(1)}%`, margin + 95, yPosition)
+      doc.text(`${maxSafeDose.toFixed(3)} ${doseUnit}`, margin + 125, yPosition)
       
       // Color code the result
       if (pass) {
         doc.setTextColor(0, 128, 0)
-        doc.text('PASS', margin + 160, yPosition)
+        doc.text('PASS', margin + 165, yPosition)
       } else {
         doc.setTextColor(255, 0, 0)
-        doc.text('FAIL', margin + 160, yPosition)
+        doc.text('FAIL', margin + 165, yPosition)
       }
       
       yPosition += 8

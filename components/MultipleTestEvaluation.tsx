@@ -11,13 +11,33 @@ interface MultipleTestEvaluationProps {
   readings: TestReading[]
   endotoxinLimit: number
   unit: string
+  animal: any
+  doseUnit: string
+  frequency: 'hourly' | 'daily'
+  route: 'standard' | 'intrathecal'
 }
 
-export function MultipleTestEvaluation({ readings, endotoxinLimit, unit }: MultipleTestEvaluationProps) {
+export function MultipleTestEvaluation({ readings, endotoxinLimit, unit, animal, doseUnit, frequency, route }: MultipleTestEvaluationProps) {
   const allPass = readings.every(r => r.value <= endotoxinLimit)
   const somePass = readings.some(r => r.value <= endotoxinLimit)
   const passingCount = readings.filter(r => r.value <= endotoxinLimit).length
   const failingCount = readings.length - passingCount
+  
+  // Calculate max safe dose for each sample
+  const calculateMaxSafeDose = (testValue: number) => {
+    const K = route === 'intrathecal' ? 0.2 : 5 // EU/kg
+    const maxM = K / testValue // Maximum M that would keep us at the limit
+    
+    let maxSafeDose: number
+    if (doseUnit === 'mg/kg' || doseUnit === 'mL/kg') {
+      maxSafeDose = frequency === 'daily' ? maxM * 24 : maxM
+    } else {
+      const maxHourlyDose = maxM * animal.weight
+      maxSafeDose = frequency === 'daily' ? maxHourlyDose * 24 : maxHourlyDose
+    }
+    
+    return maxSafeDose
+  }
 
   return (
     <div className="mt-6 space-y-4">
@@ -89,7 +109,7 @@ export function MultipleTestEvaluation({ readings, endotoxinLimit, unit }: Multi
                       </span>
                     </div>
                     
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
                       <div>
                         <span className="text-gray-500">Test Value:</span>
                         <p className="font-medium">{reading.value.toFixed(2)} {reading.unit}</p>
@@ -112,6 +132,15 @@ export function MultipleTestEvaluation({ readings, endotoxinLimit, unit }: Multi
                         <span className="text-gray-500">Margin:</span>
                         <p className={`font-medium ${pass ? 'text-green-600' : 'text-red-600'}`}>
                           {pass ? '+' : ''}{margin.toFixed(2)} {unit}
+                        </p>
+                      </div>
+                      <div>
+                        <span className="text-gray-500">Max Safe Dose:</span>
+                        <p className={`font-medium ${!pass ? 'text-orange-600' : 'text-gray-600'}`}>
+                          {calculateMaxSafeDose(reading.value).toFixed(3)} {doseUnit}
+                          <span className="text-xs text-gray-500 block">
+                            {frequency === 'daily' ? '/day' : '/hr'}
+                          </span>
                         </p>
                       </div>
                     </div>
