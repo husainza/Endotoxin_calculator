@@ -4,7 +4,6 @@ import { useState } from 'react'
 import { AnimalSelector } from './AnimalSelector'
 import { DoseInput } from './DoseInput'
 import { ResultsDisplay } from './ResultsDisplay'
-import { ReferenceTables } from './ReferenceTables'
 import { TestEvaluation } from './TestEvaluation'
 import { TestInput } from './TestInput'
 import { ExportReport } from './ExportReport'
@@ -25,7 +24,6 @@ export function Calculator() {
   const [frequency, setFrequency] = useState<DoseFrequency>('hourly')
   const [route, setRoute] = useState<RouteOfAdministration>('standard')
   const [result, setResult] = useState<CalculationResult | null>(null)
-  const [showReferenceTables, setShowReferenceTables] = useState(false)
   const [testValue, setTestValue] = useState<number | null>(null)
   const [testUnit, setTestUnit] = useState<string>('EU/mg')
   const [sampleName, setSampleName] = useState<string>('')
@@ -112,12 +110,6 @@ export function Calculator() {
             >
               Reset
             </button>
-            <button
-              onClick={() => setShowReferenceTables(!showReferenceTables)}
-              className="px-6 py-3 bg-gradient-to-r from-teal-500 to-teal-600 text-white font-semibold rounded-lg hover:from-teal-600 hover:to-teal-700 transition-all"
-            >
-              {showReferenceTables ? 'Hide' : 'Show'} Quick Reference
-            </button>
           </div>
 
           {result && (
@@ -167,12 +159,6 @@ export function Calculator() {
           )}
         </div>
       </div>
-
-      {showReferenceTables && (
-        <div className="mt-6">
-          <ReferenceTables />
-        </div>
-      )}
     </div>
   )
 }
