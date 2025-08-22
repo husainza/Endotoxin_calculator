@@ -23,7 +23,7 @@ export function AnimalSelector({ selectedAnimal, onAnimalChange }: AnimalSelecto
         })
       }
     }
-  }, [customSpecies, customWeight, selectedAnimal.isCustom])
+  }, [customSpecies, customWeight, selectedAnimal.isCustom, onAnimalChange])
 
   const handleAnimalSelect = (value: string) => {
     const animal = animalModels.find(a => a.name === value)
