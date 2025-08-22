@@ -73,7 +73,8 @@ export function Sidebar({ activeSection, onSectionChange }: SidebarProps) {
         <div className="absolute bottom-0 left-0 right-0 p-6">
           <div className="text-xs text-indigo-200 space-y-1">
             <p>Version 1.0.0</p>
-            <p>© 2024 Aera Therapeutics</p>
+            <p>© 2025 Aera Therapeutics</p>
+            <p>Developed by Husain Attarwala, PhD</p>
           </div>
         </div>
       </div>
