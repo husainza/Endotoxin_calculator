@@ -19,9 +19,9 @@ import {
 } from '@/lib/calculations'
 
 export function Calculator() {
-  const [selectedAnimal, setSelectedAnimal] = useState<AnimalModel>(animalModels[0])
+  const [selectedAnimal, setSelectedAnimal] = useState<AnimalModel>(animalModels[4]) // Monkey as default
   const [dose, setDose] = useState<string>('')
-  const [doseUnit, setDoseUnit] = useState<DoseUnit>('mg')
+  const [doseUnit, setDoseUnit] = useState<DoseUnit>('mg/kg') // mg/kg as default
   const [frequency, setFrequency] = useState<DoseFrequency>('hourly')
   const [route, setRoute] = useState<RouteOfAdministration>('standard')
   const [result, setResult] = useState<CalculationResult | null>(null)
