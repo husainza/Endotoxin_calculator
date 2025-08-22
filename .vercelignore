@@ -1,0 +1,6 @@
+# Vercel ignore file
+verify-monkey.js
+verify-human.js
+*.log
+.git
+.gitignore
