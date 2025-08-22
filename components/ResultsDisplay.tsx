@@ -17,9 +17,9 @@ export function ResultsDisplay({ result, animal, dose, doseUnit, frequency }: Re
   
   return (
     <div className="mt-6 space-y-6">
-      <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-indigo-200 shadow-md">
-        <h2 className="text-xl font-semibold text-indigo-900 mb-4">
-          📊 Calculation Results
+      <div className="p-6 bg-white rounded-xl border border-gray-200 shadow-md">
+        <h2 className="text-xl font-semibold text-gray-900 mb-4">
+          Endotoxin Limit Calculation
         </h2>
         
         <div className="space-y-3">

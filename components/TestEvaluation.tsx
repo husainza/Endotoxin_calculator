@@ -72,7 +72,7 @@ export function TestEvaluation({ endotoxinLimit, unit, presetTestValue }: TestEv
   return (
     <div className="mt-6 p-6 bg-white rounded-xl shadow-lg border border-gray-200">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        📊 Evaluation Results
+        Test Evaluation Results
       </h3>
 
       <div className="space-y-4">
@@ -130,7 +130,7 @@ export function TestEvaluation({ endotoxinLimit, unit, presetTestValue }: TestEv
                       : 'text-orange-700'
                   : 'text-red-700'
               }`}>
-                {evaluation.pass ? '✅ PASS' : '❌ FAIL'}
+                {evaluation.pass ? 'PASS' : 'FAIL'}
               </span>
               <span className={`text-lg font-semibold ${
                 evaluation.pass 
@@ -180,12 +180,12 @@ export function TestEvaluation({ endotoxinLimit, unit, presetTestValue }: TestEv
               </p>
               {evaluation.pass && evaluation.percentage > 80 && (
                 <p className="text-xs text-orange-600 mt-1">
-                  ⚠️ Consider retesting or additional purification
+                  Warning: Consider retesting or additional purification
                 </p>
               )}
               {!evaluation.pass && (
                 <p className="text-xs text-red-600 mt-1">
-                  ⛔ Sample requires further purification to reduce endotoxin levels
+                  Action Required: Sample requires further purification to reduce endotoxin levels
                 </p>
               )}
             </div>

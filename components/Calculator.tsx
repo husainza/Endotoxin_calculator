@@ -7,6 +7,7 @@ import { ResultsDisplay } from './ResultsDisplay'
 import { ReferenceTables } from './ReferenceTables'
 import { TestEvaluation } from './TestEvaluation'
 import { TestInput } from './TestInput'
+import { ExportReport } from './ExportReport'
 import {
   animalModels,
   calculateEndotoxinLimit,
@@ -27,6 +28,7 @@ export function Calculator() {
   const [showReferenceTables, setShowReferenceTables] = useState(false)
   const [testValue, setTestValue] = useState<number | null>(null)
   const [testUnit, setTestUnit] = useState<string>('EU/mg')
+  const [sampleName, setSampleName] = useState<string>('')
 
   const handleCalculate = () => {
     const doseValue = parseFloat(dose)
@@ -56,9 +58,10 @@ export function Calculator() {
     setResult(null)
   }
 
-  const handleTestValueSet = (value: number | null, unit: string) => {
+  const handleTestValueSet = (value: number | null, unit: string, name: string) => {
     setTestValue(value)
     setTestUnit(unit)
+    setSampleName(name)
     // Reset calculation when test value changes
     if (value === null) {
       setResult(null)
@@ -119,19 +122,29 @@ export function Calculator() {
 
           {result && (
             <>
-              <ResultsDisplay 
-                result={result} 
-                animal={selectedAnimal}
-                dose={parseFloat(dose)}
-                doseUnit={doseUnit}
-                frequency={frequency}
-              />
+              {/* Test Evaluation First */}
               {testValue !== null && testUnit === result.unit && (
-                <TestEvaluation 
-                  endotoxinLimit={result.endotoxinLimit}
-                  unit={result.unit}
-                  presetTestValue={testValue}
-                />
+                <>
+                  <TestEvaluation 
+                    endotoxinLimit={result.endotoxinLimit}
+                    unit={result.unit}
+                    presetTestValue={testValue}
+                  />
+                  {sampleName && (
+                    <ExportReport
+                      sampleName={sampleName}
+                      testValue={testValue}
+                      testUnit={testUnit}
+                      endotoxinLimit={result.endotoxinLimit}
+                      animal={selectedAnimal}
+                      dose={parseFloat(dose)}
+                      doseUnit={doseUnit}
+                      frequency={frequency}
+                      route={route}
+                      result={result}
+                    />
+                  )}
+                </>
               )}
               {testValue !== null && testUnit !== result.unit && (
                 <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
@@ -141,6 +154,15 @@ export function Calculator() {
                   </p>
                 </div>
               )}
+              
+              {/* Calculation Display After */}
+              <ResultsDisplay 
+                result={result} 
+                animal={selectedAnimal}
+                dose={parseFloat(dose)}
+                doseUnit={doseUnit}
+                frequency={frequency}
+              />
             </>
           )}
         </div>
